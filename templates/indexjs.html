@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <script src="/static/index.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página Inicial</title>
     <link rel="stylesheet" type="text/css" href="/static/bulma.min.css">
@@ -94,6 +95,7 @@
                     <button class="modal-close is-large" aria-label="close" onclick="fecharModalComentario()"></button>
                 </div>
 
+                <!-- comentários fixos -->
                 <div class="box has-background-grey-darker">
                     <h2 class="title is-3 has-text-info">Comentários Recentes</h2>
                     <div class="box has-background-dark">
@@ -104,6 +106,7 @@
                         <p class="has-text-success">Aldo Marcus, Marceneiro</p>
                         <p class="has-text-white-ter">Meu caso era complicado, mas eles resolveram</p>
                     </div>
+                    <!-- comentários dinamicos -->
                     {% if comentarios %}
                     {% for comentario in comentarios %}
                     <div class="box has-background-dark">
@@ -119,7 +122,7 @@
 
                 <div class="box has-background-grey-dark">
                     <h2 class="title is-3 has-text-success">Solicite um Orçamento</h2>
-                    <form method="POST" id="adicnovo">
+                    <form method="POST" id="form_usuario">
                         <div class="field">
                             <label class="label has-text-grey-light">Seu Nome</label>
                             <div class="control">
@@ -195,7 +198,7 @@
 
     </section>
     <script>
-        document.getElementById('adicnovo').addEventListener('submit', function (event) {
+        document.getElementById('form_usuario').addEventListener('submit', function (event) {
             const nome = document.getElementById('nome').value;
             const email = document.getElementById('email').value;
             const solicit = document.getElementById('solicit').value;
@@ -207,8 +210,11 @@
             }
 
         });
+
+
+
         function limpar() {
-            document.getElementById("adicnovo").reset();
+            document.getElementById("form_usuario").reset();
         }
 
 
@@ -252,7 +258,7 @@
                     body: JSON.stringify({ autor: autor, texto: texto })
                 });
 
-                
+
                 const data = await response.json();
 
                 if (response.ok) {
@@ -266,7 +272,8 @@
                 }
             } catch (error) {
                 console.error('Erro ao enviar comentário:', error);
-                alert(data.mensagemoff)            }
+                alert(data.mensagemoff)
+            }
         }
         async function login() {
             const username = document.getElementById('usern').value;

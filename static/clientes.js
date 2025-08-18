@@ -98,6 +98,8 @@ async function adiClientes() {
 		});
 		if (response.ok) {
 			nome.value = '';
+			email.value = '';
+			solicit.value = '';
 			pegaClientes();
 		}
 	}

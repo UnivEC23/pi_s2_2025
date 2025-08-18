@@ -27,12 +27,12 @@ senha: pass
 ctrl+shit+p   - accessar os comandos do vscode
 procurar python, criar ambiente(environment) e seguir
 
-2.
+2.(caso necessário)
 #instalar deps(somente após setup do venv local)
 executar pelo terminal do vscode, que estara funcionando pelo venv(local)
 pip install -r requirements.txt
 
-3.
+3.(caso necessário)
 #executar o mariadb(ou não, se rodando em modo dev)
 docker compose up 
 ctrl+c para parar, ou fechar janela do terminal
