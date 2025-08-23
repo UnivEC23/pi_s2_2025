@@ -119,45 +119,52 @@
                     {% endif %}
                 </div>
 
+                <button class="button is-info m-3" onclick="abrir('modalUsuario')">Solicite um Orçamento!</button>
 
-                <div class="box has-background-grey-dark">
-                    <h2 class="title is-3 has-text-success">Solicite um Orçamento</h2>
-                    <form method="POST" id="form_usuario">
-                        <div class="field">
-                            <label class="label has-text-grey-light">Seu Nome</label>
-                            <div class="control">
-                                <input id="nome" class="input is-dark has-text-white-ter" type="text" name="nome"
-                                    placeholder="Seu nome">
-                            </div>
-                        </div>
+                <div class="modal" id="modalUsuario">
+                    <div class="modal-background"></div>
+                    <div class="modal-content">
+                        <div class="box has-background-grey-dark">
+                            <h2 class="title is-3 has-text-success">Solicitação de Orçamento</h2>
+                            <form method="POST" id="form_usuario">
+                                <div class="field">
+                                    <label class="label has-text-grey-light">Seu Nome</label>
+                                    <div class="control">
+                                        <input id="nome" class="input is-dark has-text-white-ter" type="text"
+                                            name="nome" placeholder="Seu nome">
+                                    </div>
+                                </div>
 
-                        <div class="field">
-                            <label class="label has-text-grey-light">Seu Email</label>
-                            <div class="control">
-                                <input id="email" class="input is-dark has-text-white-ter" type="email" name="email"
-                                    placeholder="Seu email">
-                            </div>
-                        </div>
+                                <div class="field">
+                                    <label class="label has-text-grey-light">Seu Email</label>
+                                    <div class="control">
+                                        <input id="email" class="input is-dark has-text-white-ter" type="email"
+                                            name="email" placeholder="Seu email">
+                                    </div>
+                                </div>
 
-                        <div class="field">
-                            <label class="label has-text-grey-light">Detalhes do Projeto</label>
-                            <div class="control">
-                                <textarea id="solicit" class="textarea is-dark has-text-white-ter" type="text"
-                                    name="solicit" placeholder="Descreva como podemos te ajudar"></textarea>
-                            </div>
-                        </div>
+                                <div class="field">
+                                    <label class="label has-text-grey-light">Detalhes do Projeto</label>
+                                    <div class="control">
+                                        <textarea id="solicit" class="textarea is-dark has-text-white-ter" type="text"
+                                            name="solicit" placeholder="Descreva como podemos te ajudar"></textarea>
+                                    </div>
+                                </div>
 
-                        <div class="field is-grouped">
-                            <div class="control">
-                                <button class="button is-success">Enviar</button>
-                            </div>
-                            <button class="button is-link is-light" onclick="limpar()">Limpar</button>
+                                <div class="field is-grouped">
+                                    <div class="control">
+                                        <button class="button is-success">Enviar</button>
+                                    </div>
+                                    <div class="control">
+                                        <button class="button is-light" type="button"
+                                            onclick="fechar('modalUsuario')">Cancelar</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
+                    <button class="modal-close is-large" aria-label="close" onclick="fechar('modalUsuario')"></button>
                 </div>
-
-
-
 
                 <div class="modal" id="modalLogin">
                     <div class="modal-background"></div>
