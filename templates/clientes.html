@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -43,70 +43,143 @@
 
             </div>
 
-            <div class="box">
-                <h2 class="title">Adicionar Novo Cliente</h2>
-                <form id="fomul" onsubmit="semPost(event)">
-                    <!-- <div class="form"> -->
-                    <div class="field">
-                        <label class="label has-text-dark">Nome</label>
-                        <div class="control">
-                            <input id="nome" class="input is-info" type="text" name="nome" placeholder="Seu nome">
-                        </div>
-                    </div>
+            <div class="box is-hidden" id="listaCoBox">
+                <h2 class="title is-3 ">Lista de Comentários</h2>
+                <ul class="list" id="listaComents">
 
-                    <div class="field">
-                        <label class="label has-text-dark">Email</label>
-                        <div class="control">
-                            <input id="email" class="input is-info" type="emai" name="email" placeholder="Seu email">
-                        </div>
-                    </div>
+                </ul>
 
-                    <div class="field">
-                        <label class="label has-text-dark">Solicitação</label>
-                        <div class="control">
-                            <textarea id="solicit" class="textarea is-info" type="text" name="solicit"
-                                placeholder="Descreve seu problema"></textarea>
-                        </div>
-                    </div>
+            </div>
 
-                    <div class="field is-grouped">
-                        <div class="control">
-                            <button onclick="adiClientes()" class="button is-info">
-                                <span class="icon">
-                                    <i class="fas fa-plus"></i>
-                                </span>
-                                <span>Adicionar</span>
-                            </button>
+            <div class="container">
+                <div>
+                    <button id="botaoClientes" type="button" onclick="abrirClientes()" class="button is-info">
+                        <span class="icon">
+                            <i class="fas fa-plus"></i>
+                        </span>
+                        <span>Adicionar Novo Cliente</span>
+                    </button>
+                </div>
 
+                <div id="box_clientes" class="box is-hidden">
+                    <h2 class="title">Novo Cliente</h2>
+
+                    <form method="POST" id="formSolicit" onsubmit="semPost(event)">
+                        <div class="field">
+                            <label class="label has-text-dark">Nome</label>
+                            <div class="control">
+                                <input id="nome" class="input is-info" type="text" name="nome" placeholder="Seu nome"
+                                    required>
+                            </div>
                         </div>
-                </form>
-                <br>
-                <br>
-                <!-- <div class="field is-grouped"> -->
-                <!-- <div class="control is-expanded">
+
+                        <div class="field">
+                            <label class="label has-text-dark">Email</label>
+                            <div class="control">
+                                <input id="email" class="input is-info" type="emai" name="email" placeholder="Seu email"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label has-text-dark">Solicitação</label>
+                            <div class="control">
+                                <textarea id="solicit" class="textarea is-info" type="text" name="solicit"
+                                    placeholder="Descreve seu problema" required></textarea>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <button onclick="adiClientes()" class="button is-primary is-info">
+                                    <span>Adicionar</span>
+                                </button>
+                            </div>
+                            <div class="control">
+                                <button class=" button is-light" type="button"
+                                    onclick="fecharClientes()">fechar</button>
+                            </div>
+                            <div class="is-flex is-justify-content-center is-align-items-center">
+                                <p class="has-text-centered has-text-danger is-hidden" id="erroSoli"> Por favor,
+                                    preencha todos os campos. </p>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- <div class="field is-grouped"> -->
+                    <!-- <div class="control is-expanded">
                     <input class="input is-info" type="text" id="novo-cliente" placeholder="Nome do cliente">
-                </div>
-                <br>
-                <div class="control is-expanded">
+                     </div>
+                     <br>
+                    <div class="control is-expanded">
                     <input id="email" class="input is-info" type="email" name="email" placeholder="Seu email">
-                </div>
-                <div class="control">
+                    </div>
+                    <div class="control">
                     <button onclick="adiClientes()" class="button is-info">
                         <span class="icon">
                             <i class="fas fa-plus"></i>
                         </span>
                         <span>Adicionar</span>
                     </button>
-                </div> -->
-                <!-- </div> -->
-            </div>
+                 </div> -->
+                    <!-- </div> -->
+                </div>
 
-            <a href="{{ url_for('home') }}" class="button is-light mt-4">
-                <span class="icon">
-                    <i class="fas fa-arrow-left"></i>
-                </span>
-                <span>Voltar para a Página Inicial</span>
-            </a>
+                <br>
+
+                <div>
+                    <button id="botaoComent" type="button" onclick="abrirComent()" class="button is-info">
+                        <span class="icon">
+                            <i class="fas fa-plus"></i>
+                        </span>
+                        <span>Adicionar Novo Comentário</span>
+                    </button>
+                </div>
+
+                <div id="box_coment" class="box is-hidden">
+                    <h2 class="title">Novo Comentário</h2>
+                    <form method="POST" id="formComentario" onsubmit="semPost(event)">
+                        <div class="field">
+                            <label class="label has-text-grey-light">Seu Nome</label>
+                            <div class="control">
+                                <input class="input is-dark has-text-white-ter" type="text" id="nomeComentario"
+                                    placeholder="Seu nome" required>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label has-text-grey-light">Comentário</label>
+                            <div class="control">
+                                <textarea class="textarea is-dark has-text-white-ter" id="textoComentario"
+                                    placeholder="Seu comentário" required></textarea>
+                            </div>
+                        </div>
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <button class="button is-success" onclick="adiCmt()">Adicionar</button>
+                            </div>
+                            <div class="control">
+                                <button class="button is-light" type="button" onclick="fecharComent()">fechar</button>
+                            </div>
+                            <div class="is-flex is-justify-content-center is-align-items-center">
+                                <p class="has-text-centered has-text-danger is-hidden" id="erroCom"> Por favor,
+                                    preencha todos os campos. </p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <br>
+
+
+            <div>
+                <a href="{{ url_for('home') }}" class="button is-light mt-4">
+                    <span class="icon">
+                        <i class="fas fa-arrow-left"></i>
+                    </span>
+                    <span>Voltar para a Página Inicial</span>
+                </a>
+            </div>
         </div>
     </section>
 

@@ -121,7 +121,7 @@ class clientes_sql(iClientes):
             print(e)
             return {}, 500
 
-    def adicionar(self, nome: str, email:str, solicit:str):
+    def adicionar(self, nome: str, email: str, solicit: str):
         # connection for MariaDB
         conn = mariadb.connect(**mdbCFG)
         # create a connection cursor
@@ -159,7 +159,7 @@ class clientes_sqla(iClientes):
 
             return jsonify(clientes), 200
         except Exception as e:
-            print("erro ao GET")
+            print("erro ao GET Clientes")
             print(e)
             return {}, 500
 
@@ -183,7 +183,7 @@ class clientes_sqla(iClientes):
             print(e)
             return {}, 500
 
-    def adicionar(self, nome: str, email:str, solicit:str):
+    def adicionar(self, nome: str, email: str, solicit: str):
         try:
             cliente = Clientes(nome=nome, email=email, solicit=solicit)
             db.session.add(cliente)

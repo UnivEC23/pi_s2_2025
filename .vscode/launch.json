@@ -25,6 +25,7 @@
 			// 	"dev",
 			// ],
 			// "cwd": "${workspaceFolder}",
+			"justMyCode": false,
 			"console": "internalConsole",
 		}
 	]

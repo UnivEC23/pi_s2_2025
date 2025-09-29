@@ -1,11 +1,12 @@
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template, request, jsonify, Response
 import sys
 import os
 from interfaces import clientes_sql, clientes_sqla
 from init import app, db
-from modelos import Comentario 
-from sqlalchemy import desc  
+from modelos import Comentario
+from sqlalchemy import desc
 
 
 id_clientes = 0
@@ -25,17 +26,18 @@ def home():
     elif request.method == 'POST':
         novo = request.form
         if not novo.get("nome") or not novo.get("email") or not novo.get("solicit"):
-            return render_template('indexjs.html', form_error="Por favor, preencha todos os campos do formulário.", comentarios=comentarios)        
+            return render_template('indexjs.html', form_error="Por favor, preencha todos os campos do formulário.", comentarios=comentarios)
 
-        tClientes.adicionar(novo.get("nome"), novo.get("email"), novo.get("solicit"))
+        tClientes.adicionar(novo.get("nome"), novo.get(
+            "email"), novo.get("solicit"))
         return render_template('indexjs.html', comentarios=comentarios)
 
 
 @app.route('/clientes', methods=['POST'])
 def clientes():
     login = request.form
-    if not login.get("username") or not login.get("password"):
-        return render_template('indexjs.html', login_error="Por favor, preencha todos os campos do login.", comentarios=pegar_comentarios())
+    # if not login.get("username") or not login.get("password"):
+    #     return render_template('indexjs.html', login_error="Por favor, preencha todos os campos do login.", comentarios=pegar_comentarios())
 
     if login.get("username") == login_usuario and login.get("password") == login_senha:
         return render_template('clientes.html')
@@ -43,6 +45,8 @@ def clientes():
         return render_template('indexjs.html', login_error="Usuário ou senha incorretos.", comentarios=pegar_comentarios())
 
 # adicionado para testes sem login
+
+
 @app.route('/clientes', methods=['GET'])
 def clientesget():
     return render_template('clientes.html')
@@ -54,9 +58,9 @@ def clientesget():
 def clientesGet():
     return tClientes.pegarTodos()
 
+
 @app.route('/api/clientes', methods=['POST'])
 def clientesPost():
-    # pegando nome
     nome = request.json["nome"]
     email = request.json["email"]
     solicit = request.json["solicit"]
@@ -70,30 +74,110 @@ def clientesPost():
 def clientesDel():
     # pegando nome
     nome = request.json["nome"]
-
     return tClientes.deletar(nome)
 
 # --------api comentarios-----------------
 
+
 @app.route('/api/comentarios', methods=['POST'])
-def adicionar_comentario():
+def comentariosPost():
     try:
         data = request.get_json()
         autor = data.get('autor')
         texto = data.get('texto')
 
-        if not autor or not texto:
-            return jsonify({'erro':'Autor e texto são obrigatórios.'})
+        # if not autor or not texto:
+        #     return jsonify({'erro': 'Autor e texto são obrigatórios.'})
 
         novo_comentario = Comentario(autor=autor, texto=texto)
         db.session.add(novo_comentario)
         db.session.commit()
+        # return jsonify({"error": "Incorrect credentials"}), 401
 
-        return jsonify({'mensagemok':'Comentário adicionado com sucesso!'})
+        # return jsonify({'msg': 'Comentário adicionado com sucesso!'}), 201
+        comentarios = pegar_comentarios()
+        return render_template('indexjs.html', comentarios=comentarios)
     except Exception as e:
-      
-        return jsonify({'mensagemoff':'Erro ao adicionar comentário.'+e})
+        print('Erro ao adicionar comentário: ' + e)
+        return 500
+
+
+@app.route('/api/comentarios', methods=['GET'])
+def comentariosGet():
+    try:
+        comentarios = pegar_comentarios()
+        # clientes = Clientes.query.all()
+
+        return jsonify(comentarios), 200
+    except Exception as e:
+        print("erro ao GET Clientes")
+        print(e)
+        return {}, 500
+    # try:
+    #     data = request.get_json()
+    #     autor = data.get('autor')
+    #     texto = data.get('texto')
+
+    #     # if not autor or not texto:
+    #     #     return jsonify({'erro': 'Autor e texto são obrigatórios.'})
+
+    #     novo_comentario = Comentario(autor=autor, texto=texto)
+    #     db.session.add(novo_comentario)
+    #     db.session.commit()
+    #     # return jsonify({"error": "Incorrect credentials"}), 401
+
+    #     return jsonify({'msg': 'Comentário adicionado com sucesso!'}), 201
+    # except Exception as e:
+    #     print('Erro ao pegar comentários: ' + e)
+    #     return 500
+
+
+@app.route('/api/comentarios', methods=['DELETE'])
+def comentariosDel():
+    try:
+        autor = request.json["autor"]
+        # data = request.json["data"]
+        # dTime = datetime.strptime(data, )
+        # print(data)
+        # se filtrar pelo primeiro---
+        # cmt = Comentario.query.filter_by(data_criacao=dTime).first()
+        # db.session.delete(cmt)
+        # ---
+
+        # se pegar todos----
+        cmts = Comentario.query.filter_by(autor=autor).all()
+        for c in cmts:
+            db.session.delete(c)
+        # ----
+
+        db.session.commit()
+        return {}, 200
+    except Exception as e:
+        print("erro ao deletar comentário")
+        print(e)
+        return {}, 500
+
 # ------------------------------
+
+# --------api orçamento-----------------
+
+
+@app.route('/api/orca', methods=['POST'])
+def adicionar_orçamento():
+    try:
+        data = request.get_json()
+        nome = data.get('nome')
+        email = data.get('email')
+        solicit = data.get('solicit')
+
+        tClientes.adicionar(nome, email, solicit)
+
+        return jsonify({'msg': 'Orçamento adicionado com sucesso!'}), 201
+    except Exception as e:
+        print('Erro ao adicionar orçamento: ' + e)
+        return 500
+# ------------------------------
+
 
 def rodar():
     # port = int(os.environ.get('PORT', 5000))
@@ -105,13 +189,16 @@ def rodar():
 
 
 def pegar_comentarios():
-    with app.app_context(): 
+    with app.app_context():
         try:
-            comentarios = Comentario.query.order_by(desc(Comentario.data_criacao)).limit(3).all()
+            # comentarios = Comentario.query.order_by(
+            #     desc(Comentario.data_criacao)).limit(3).all()
+            comentarios = Comentario.query.order_by(
+                desc(Comentario.data_criacao)).all()
             return comentarios
         except Exception as e:
             print("Erro ao buscar comentários:", e)
-            return [] 
+            return []
 
 
 if __name__ == "__main__":
