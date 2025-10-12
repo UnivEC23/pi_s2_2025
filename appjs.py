@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, render_template, request, jsonify, Response
+from flask import Flask, abort, redirect, render_template, request, jsonify, Response, url_for
 import sys
 import os
 from interfaces import clientes_sql, clientes_sqla
@@ -14,42 +14,47 @@ tClientes = clientes_sqla()
 
 login_usuario = "user"
 login_senha = "pass"
+logado = False
 
 
 # ---------paginas ativas--------------------------
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/', methods=['GET'])
 def home():
     comentarios = pegar_comentarios()
-    if request.method == 'GET':
-        return render_template('indexjs.html', comentarios=comentarios)
-    elif request.method == 'POST':
-        novo = request.form
-        if not novo.get("nome") or not novo.get("email") or not novo.get("solicit"):
-            return render_template('indexjs.html', form_error="Por favor, preencha todos os campos do formulário.", comentarios=comentarios)
+    # if request.method == 'GET':
+    return render_template('indexjs.html', comentarios=comentarios)
+    # elif request.method == 'POST':
+    #     novo = request.form
+    #     if not novo.get("nome") or not novo.get("email") or not novo.get("solicit"):
+    #         return render_template('indexjs.html', form_error="Por favor, preencha todos os campos do formulário.", comentarios=comentarios)
 
-        tClientes.adicionar(novo.get("nome"), novo.get(
-            "email"), novo.get("solicit"))
-        return render_template('indexjs.html', comentarios=comentarios)
+    # tClientes.adicionar(novo.get("nome"), novo.get(
+    #     "email"), novo.get("solicit"))
+    # return render_template('indexjs.html', comentarios=comentarios)
 
 
-@app.route('/clientes', methods=['POST'])
-def clientes():
-    login = request.form
-    # if not login.get("username") or not login.get("password"):
-    #     return render_template('indexjs.html', login_error="Por favor, preencha todos os campos do login.", comentarios=pegar_comentarios())
+# @app.route('/clientes', methods=['POST'])
+# def clientes():
+#     login = request.form
+#     # if not login.get("username") or not login.get("password"):
+#     #     return render_template('indexjs.html', login_error="Por favor, preencha todos os campos do login.", comentarios=pegar_comentarios())
 
-    if login.get("username") == login_usuario and login.get("password") == login_senha:
-        return render_template('clientes.html')
-    else:
-        return render_template('indexjs.html', login_error="Usuário ou senha incorretos.", comentarios=pegar_comentarios())
+#     if login.get("username") == login_usuario and login.get("password") == login_senha:
+#         return render_template('clientes.html')
+#     else:
+#         return render_template('indexjs.html', login_error="Usuário ou senha incorretos.", comentarios=pegar_comentarios())
 
 # adicionado para testes sem login
 
 
 @app.route('/clientes', methods=['GET'])
 def clientesget():
-    return render_template('clientes.html')
+    if logado == True:
+        return render_template('clientes.html')
+    else:
+        abort(401)
+        # return jsonify({'msg': 'Acesso não autorizado!'}), 401
 
 
 # --------api clientes------------------
@@ -176,6 +181,47 @@ def adicionar_orçamento():
     except Exception as e:
         print('Erro ao adicionar orçamento: ' + e)
         return 500
+# ------------------------------
+
+# --------api login-----------------
+
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    global logado
+    try:
+        data = request.get_json()
+        usern = data.get('usern')
+        passw = data.get('passw')
+
+        if usern == login_usuario and passw == login_senha:
+            # return clientesget(), 200
+            logado = True
+            return jsonify({'rota': url_for('clientesget')}), 200
+            # return redirect(url_for('clientesget'))
+            # with app.app_context():
+            # return render_template('clientes.html')
+        else:
+            print('login ou senha incorretos!')
+            return jsonify({'msg': 'login ou senha incorretos!'}), 401
+    except Exception as e:
+        print('Erro ao tentar login: ' + e)
+        return 500
+
+
+@app.route('/api/deslogin', methods=['POST'])
+def deslogin():
+    global logado
+    logado = False
+    # try:
+    # print("saindo")
+    # return redirect(url_for('home'))
+    return jsonify({'rota': url_for('home')}), 200
+    # return 200
+
+    # except Exception as e:
+    #     print('Erro ao tentar realizas deslogin: ' + e)
+    #     return 500
 # ------------------------------
 
 

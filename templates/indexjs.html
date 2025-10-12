@@ -16,7 +16,7 @@
         <!-- {% if login_error %}
         <p class="help is-danger is-down">{{ login_error }}</p>
         {% endif %} -->
-        <button class="button is-success is-right" onclick="abrir('modalLogin')">Login</button>
+        <button class="button is-success is-right" onclick="abrirModal('modalLogin')">Login</button>
 
     </div>
     <div class="modal" id="modalLogin">
@@ -25,7 +25,7 @@
             <div class="box has-background-grey-darker has-text-white-ter">
                 <h2 class="title is-4 has-text-info">Acesso ao Painel</h2>
 
-                <form action="/clientes" method="POST">
+                <form method="POST" id="form_login" onsubmit="semPost(event)">
                     <div class="field">
                         <label class="label has-text-grey-light">Usuário</label>
                         <div class="control">
@@ -44,19 +44,20 @@
 
                     <div class="field is-grouped">
                         <div class="control">
-                            <button class="button is-success">Entrar</button>
+                            <button class="button is-success" onclick="submitLogin()">Entrar</button>
                         </div>
                         <div class="control">
                             <button class="button is-link is-light" type="button"
-                                onclick="fechar('modalLogin')">Cancelar</button>
+                                onclick="fecharLogin()">Cancelar</button>
                         </div>
-                        {% if login_error %}
-                        <div class="is-flex is-justify-content-center is-align-items-center">
-                            <p class="has-text-centered has-text-danger" id="erroLogin"> {{ login_error }}</p>
+                        <div class="is-justify-content-center is-align-items-center">
+                            <p class="is-hidden has-text-centered has-text-danger" id="loginErro"> Usuário ou senha
+                                incorretos
+                            </p>
                         </div>
-                        {% endif %}
                         <div class="is-flex is-justify-content-center is-align-items-center">
-                            <p class="has-text-centered has-text-danger is-hidden" id="erroLogin"> Por favor, preencha
+                            <p class="is-hidden has-text-centered has-text-danger " id="loginIncompleto"> Por favor,
+                                preencha
                                 todos os campos. </p>
                         </div>
 
@@ -64,7 +65,7 @@
                 </form>
             </div>
         </div>
-        <button class="modal-close is-large" aria-label="close" onclick="fechar('modalLogin')"></button>
+        <button class="modal-close is-large" aria-label="close" onclick="fecharLogin()"></button>
     </div>
 
     <section class="hero is-dark is-fullheight">
@@ -130,13 +131,15 @@
                     {% endif %}
                 </div>
 
-                <button class="button is-info m-3" onclick="abrir('modalOrcamento')">Solicite um Orçamento!</button>
+                <button class="button is-info m-3" onclick="abrirModal('modalOrcamento')">Solicite um
+                    Orçamento!</button>
 
                 <div class="modal" id="modalOrcamento">
                     <div class="modal-background"></div>
                     <div class="modal-content">
                         <div class="box has-background-grey-dark">
                             <h2 class="title is-3 has-text-success">Solicitação de Orçamento</h2>
+
                             <form method="POST" id="form_orca" onsubmit="semPost(event)">
                                 <div class="field">
                                     <label class="label has-text-grey-light">Seu Nome</label>
