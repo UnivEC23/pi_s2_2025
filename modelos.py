@@ -1,5 +1,9 @@
+from sqlalchemy.orm import mapped_column
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import DateTime, String
 from dataclasses import dataclass
-from init import db
+from init import db, engine
 from datetime import datetime  # Importe o módulo datetime
 
 
@@ -39,3 +43,26 @@ class Comentario(db.Model):
 
     def __repr__(self):
         return "<Comentario Autor: {}>".format(self.autor)
+
+
+class Base_Tur(DeclarativeBase):
+    pass
+
+
+class Comentario_Turso(Base_Tur):
+    __tablename__ = "comentarios"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    autor: Mapped[str] = mapped_column(String(80))
+    texto: Mapped[str] = mapped_column(String(500))
+    data_criacao: Mapped[datetime] = mapped_column(default=datetime.now)
+
+    def __repr__(self) -> str:
+        return "<Comentario Autor: {}>".format(self.autor) + "\n<Comentario Texto: {}>".format(self.texto)
+
+    def serializado(self):
+        return {
+            'id': self.id,
+            'autor': self.autor,
+            'texto': self.texto,
+            'data_criacao': self.data_criacao,
+        }

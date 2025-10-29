@@ -1,3 +1,5 @@
+#temp
+.env
 #extras
 .venv
 #esse arquivo vc pode colocar suas configs e dps rodar no terminal:

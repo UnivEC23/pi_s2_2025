@@ -4,9 +4,13 @@ from flask import Flask, abort, redirect, render_template, request, jsonify, Res
 import sys
 import os
 from interfaces import clientes_sql, clientes_sqla
-from init import app, db
+from init import app, db, engine
+# from init import client
 from modelos import Comentario
 from sqlalchemy import desc
+from sqlalchemy.orm import Session
+from sqlalchemy import select
+from modelos import Comentario_Turso, Base_Tur
 
 
 id_clientes = 0
@@ -21,7 +25,7 @@ logado = False
 
 @app.route('/', methods=['GET'])
 def home():
-    comentarios = pegar_comentarios()
+    comentarios = pegar_comentarios_tur()
     # if request.method == 'GET':
     return render_template('indexjs.html', comentarios=comentarios)
     # elif request.method == 'POST':
@@ -84,7 +88,49 @@ def clientesDel():
 # --------api comentarios-----------------
 
 
+def pegar_comentarios_tur():
+    with Session(engine) as session:
+        try:
+            operação = select(Comentario_Turso)
+            comentários = session. scalars(select(Comentario_Turso)).all()
+
+            print("Os comentários são:")
+            for item in session.scalars(operação):
+                print(item)
+            return comentários
+            # return session.scalars(operação)
+        except Exception as e:
+            print("Erro ao buscar comentários:", e)
+            return []
+
+
 @app.route('/api/comentarios', methods=['POST'])
+def comentariosPost_tur():
+    with Session(engine) as session:
+        try:
+            data = request.get_json()
+            autor = data.get('autor')
+            texto = data.get('texto')
+
+            # if not autor or not texto:
+            #     return jsonify({'erro': 'Autor e texto são obrigatórios.'})
+
+            novo_comentario = Comentario_Turso(autor=autor, texto=texto)
+            # print(novo_comentario)
+            session.add(novo_comentario)
+            session.commit()
+
+            # return jsonify({"error": "Incorrect credentials"}), 401
+
+            # return jsonify({'msg': 'Comentário adicionado com sucesso!'}), 201
+            comentarios = pegar_comentarios_tur()
+            return render_template('indexjs.html', comentarios=comentarios)
+        except Exception as e:
+            print('Erro ao adicionar comentário: ' + e)
+            return 500
+
+
+# @app.route('/api/comentarios', methods=['POST'])
 def comentariosPost():
     try:
         data = request.get_json()
@@ -110,10 +156,10 @@ def comentariosPost():
 @app.route('/api/comentarios', methods=['GET'])
 def comentariosGet():
     try:
-        comentarios = pegar_comentarios()
+        comentarios = pegar_comentarios_tur()
         # clientes = Clientes.query.all()
 
-        return jsonify(comentarios), 200
+        return jsonify([cmt.serializado() for cmt in comentarios]), 200
     except Exception as e:
         print("erro ao GET Clientes")
         print(e)
@@ -138,6 +184,36 @@ def comentariosGet():
 
 
 @app.route('/api/comentarios', methods=['DELETE'])
+def comentariosDel_tur():
+    with Session(engine) as session:
+        try:
+            autor = request.json["autor"]
+            # data = request.json["data"]
+            # dTime = datetime.strptime(data, )
+            # print(data)
+            # se filtrar pelo primeiro---
+            # cmt = Comentario.query.filter_by(data_criacao=dTime).first()
+            # db.session.delete(cmt)
+            # ---
+
+            # se pegar todos----
+            # cmts = Comentario.query.filter_by(autor=autor).all()
+            cmts = session. scalars(select(Comentario_Turso).where(
+                Comentario_Turso.autor == autor)).all()
+            for c in cmts:
+                session.delete(c)
+            # ----
+
+            session.commit()
+            # client.sync()
+            return {}, 200
+        except Exception as e:
+            print("erro ao deletar comentário")
+            print(e)
+            return {}, 500
+
+
+# @app.route('/api/comentarios', methods=['DELETE'])
 def comentariosDel():
     try:
         autor = request.json["autor"]
@@ -256,4 +332,6 @@ if __name__ == "__main__":
     tClientes.criarTabela()
     with app.app_context():
         db.create_all()  # crias as tabelas
+
+    Base_Tur.metadata.create_all(engine)
     rodar()
