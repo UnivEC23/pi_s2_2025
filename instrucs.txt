@@ -22,10 +22,10 @@ senha: pass
 
 ##como rodar
 
-1.
-#para criar .venv local
+1.criar .venv local
 ctrl+shit+p   - accessar os comandos do vscode
 procurar python, criar ambiente(environment) e seguir
+veja se você tem acesso ao .venv no terminal*
 
 2.(caso necessário)
 #instalar deps(somente após setup do venv local)
@@ -39,9 +39,19 @@ ctrl+c para parar, ou fechar janela do terminal
 ou docker compose up -d para rodar no fundo
 com docker compose down para parar
 
-4.
-#executar projeto python
+- caso queria executar localmente via sqlite:
+>no arquivo init.py, coloque # antes da linha:
+db_atual = db_mariadb -> # db_atual = db_mariadb
+>e retire o # antes de:
+#db_atual = db_sql_lite -> db_atual = db_sql_lite
+E pronto, agora vc esta no modo dev.
+
+
+4.executar projeto python
+isso deve ser executado no env certo, dentro do terminal do vscode.*
 python appjs.py
+
+*caso seu terminal não apareça (.venv) antes da linha, reinicie o terminal clicando no simbolo de lixinho no canto superior direto e reabrindo o terminal
 
 
 

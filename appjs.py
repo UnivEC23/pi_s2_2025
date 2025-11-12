@@ -61,6 +61,48 @@ def clientesget():
         # return jsonify({'msg': 'Acesso não autorizado!'}), 401
 
 
+# --------api login-----------------
+
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    global logado
+    try:
+        data = request.get_json()
+        usern = data.get('usern')
+        passw = data.get('passw')
+
+        if usern == login_usuario and passw == login_senha:
+            # return clientesget(), 200
+            logado = True
+            return jsonify({'rota': url_for('clientesget')}), 200
+            # return redirect(url_for('clientesget'))
+            # with app.app_context():
+            # return render_template('clientes.html')
+        else:
+            print('login ou senha incorretos!')
+            return jsonify({'msg': 'login ou senha incorretos!'}), 401
+    except Exception as e:
+        print('Erro ao tentar login: ' + e)
+        return 500
+
+
+@app.route('/api/deslogin', methods=['POST'])
+def deslogin():
+    global logado
+    logado = False
+    # try:
+    # print("saindo")
+    # return redirect(url_for('home'))
+    return jsonify({'rota': url_for('home')}), 200
+    # return 200
+
+    # except Exception as e:
+    #     print('Erro ao tentar realizas deslogin: ' + e)
+    #     return 500
+# ------------------------------
+
+
 # --------api clientes------------------
 
 @app.route('/api/clientes', methods=['GET'])
@@ -257,47 +299,6 @@ def adicionar_orçamento():
     except Exception as e:
         print('Erro ao adicionar orçamento: ' + e)
         return 500
-# ------------------------------
-
-# --------api login-----------------
-
-
-@app.route('/api/login', methods=['POST'])
-def login():
-    global logado
-    try:
-        data = request.get_json()
-        usern = data.get('usern')
-        passw = data.get('passw')
-
-        if usern == login_usuario and passw == login_senha:
-            # return clientesget(), 200
-            logado = True
-            return jsonify({'rota': url_for('clientesget')}), 200
-            # return redirect(url_for('clientesget'))
-            # with app.app_context():
-            # return render_template('clientes.html')
-        else:
-            print('login ou senha incorretos!')
-            return jsonify({'msg': 'login ou senha incorretos!'}), 401
-    except Exception as e:
-        print('Erro ao tentar login: ' + e)
-        return 500
-
-
-@app.route('/api/deslogin', methods=['POST'])
-def deslogin():
-    global logado
-    logado = False
-    # try:
-    # print("saindo")
-    # return redirect(url_for('home'))
-    return jsonify({'rota': url_for('home')}), 200
-    # return 200
-
-    # except Exception as e:
-    #     print('Erro ao tentar realizas deslogin: ' + e)
-    #     return 500
 # ------------------------------
 
 
